@@ -16,7 +16,7 @@ cd ja-receipts-processor
 
 build and run
 ```bash
-docker build -t joeattueyi/ja-receipts-processor
+docker build -t joeattueyi/ja-receipts-processor .
 docker run -p 8080:8080 joeattueyi/ja-receipts-processor
 ```
 
