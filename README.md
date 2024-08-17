@@ -1,7 +1,7 @@
 
 # Receipt Processor
 
-## Run via Docker
+## Run via Docker - recommended
 Clone the project
 
 ```bash

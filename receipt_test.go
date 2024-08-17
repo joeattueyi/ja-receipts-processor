@@ -2,7 +2,6 @@ package main
 
 import "testing"
 
-// TODO: ADD MALFORMED RECEIPTS TO TESTS
 func TestReceiptValidation(t *testing.T) {
 
 	t.Run("Receipt 1", func(t *testing.T) {
