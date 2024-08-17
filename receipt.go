@@ -46,6 +46,10 @@ func (v *purchaseTime) valid() (valid bool) {
 type itemArray []Item
 
 func (arr *itemArray) valid() (valid bool) {
+	if len(*arr) < 1 {
+		return false
+	}
+
 	for _, v := range *arr {
 		if !v.valid() {
 			return false
@@ -128,16 +132,22 @@ func (r *Receipt) computePoints() (points int) {
 	total, _ := strconv.ParseFloat(string(r.Total), 64)
 	total100 := int(total * 100)
 
+	// round dollar
 	if (total100 % 100) == 0 {
 		points += 50
 	}
 
+	// multiple of 0.25
 	if (total100 % 25) == 0 {
 		points += 25
 	}
 
+	// Every two items on receipt
 	points += 5 * (int(len(r.Items) / 2))
 
+	// f the trimmed length of the item description is a multiple of 3,
+	// multiply the price by 0.2 and round up to the nearest integer.
+	// The result is the number of points earned
 	for _, item := range r.Items {
 		description := strings.TrimSpace(string(item.ShortDescription))
 		if len(description)%3 == 0 {
@@ -146,10 +156,12 @@ func (r *Receipt) computePoints() (points int) {
 		}
 	}
 
+	// odd day
 	if int(r.PurchaseDate[len(r.PurchaseDate)-1])%2 == 1 {
 		points += 6
 	}
 
+	// purchase time after 2pm & before 4pm
 	purchaseHour, _ := strconv.ParseInt(string(r.PurchaseTime[0:2]), 10, 64)
 	if purchaseHour == 14 || purchaseHour == 15 {
 		points += 10

@@ -37,7 +37,7 @@ func handleProcess(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(400)
-		w.Write([]byte("The input is invalid"))
+		w.Write([]byte("The receipt is invalid"))
 		return
 	}
 
@@ -86,15 +86,15 @@ func handlePoints(w http.ResponseWriter, r *http.Request) {
 
 	uuid, err := uuid.Parse(id)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte("input cannot be parsed as UUID"))
+		w.WriteHeader(404)
+		w.Write([]byte("No receipt found for that id"))
 		return
 	}
 
 	points, ok := idToPoints[uuid]
 	if !ok {
-		w.WriteHeader(400)
-		w.Write([]byte("Receipt not found for UUID"))
+		w.WriteHeader(404)
+		w.Write([]byte("No receipt found for that id"))
 		return
 	}
 
@@ -106,8 +106,8 @@ func handlePoints(w http.ResponseWriter, r *http.Request) {
 
 	json, err := json.Marshal(response)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte("response cannot be parsed"))
+		w.WriteHeader(404)
+		w.Write([]byte("No receipt found for that id"))
 		return
 	}
 

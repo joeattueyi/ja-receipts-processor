@@ -92,3 +92,51 @@ func TestHandleRoutes(t *testing.T) {
 	}
 
 }
+
+func TestFailure(t *testing.T) {
+	app := Application{port: 8080}
+	r := mux.NewRouter()
+	r.HandleFunc("/receipts/process", handleProcess).
+		Methods("POST")
+	r.HandleFunc("/receipts/{id}/points", handlePoints).
+		Methods("GET")
+	app.router = r
+
+	ts := httptest.NewServer(app.router)
+	defer ts.Close()
+
+	resp, err := ts.Client().Post(ts.URL+"/receipts/process", "application/json", strings.NewReader(
+		``))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.StatusCode != 400 {
+		t.Errorf("got %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("Cannot read response body")
+	}
+
+	payload := struct{ Id string }{}
+
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		t.Fatal("unable to parse receipt")
+	}
+
+	resp, err = ts.Client().Get(ts.URL + fmt.Sprintf("/receipts/%s/points", payload.Id))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.StatusCode != 404 {
+		t.Errorf("got %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+}
