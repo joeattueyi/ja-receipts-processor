@@ -47,13 +47,44 @@ go run .
 ### Process receipts
 ```http
   POST /receipts/process
+  Content-Type: application/json
+  {
+    "retailer": "M&M Corner Market",
+    "purchaseDate": "2022-03-20",
+    "purchaseTime": "14:33",
+    "items": [
+        {
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+        },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+        },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+        },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+        }
+    ],
+    "total": "9.00"
+  }
 
-  { "id": "7fb1377b-b223-49d9-a31a-5a02701dd310"}
+```
+
+returns
+
+```bash
+ { "id": "7fb1377b-b223-49d9-a31a-5a02701dd310"}
 ```
 
 ### Get points for a receipt
 ```http
 GET /receipts/{id}/points
+```
 
+returns
+
+```bash
 { "points": 32 }
 ```
