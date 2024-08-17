@@ -1,11 +1,11 @@
 
 # Receipt Processor
 
-## Run
+## Run via Docker
 Clone the project
 
 ```bash
-git clone git@github.com:joeattueyi/ja-receipts-processor
+git clone https://github.com/joeattueyi/ja-receipts-processor.git
 ```
 
 Change into project directory
@@ -19,6 +19,28 @@ build and run
 docker build .
 docker run -p 8080:8080 .
 ```
+
+## Run locally
+If you already have Go installed you can do the following
+
+Clone the project
+
+```bash
+git clone https://github.com/joeattueyi/ja-receipts-processor.git
+```
+
+Change into project directory
+
+```bash
+cd ja-receipts-processor
+```
+
+Run
+```bash
+go run .
+```
+
+
 
 ## API Documentation
 
