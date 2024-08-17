@@ -163,7 +163,8 @@ func (r *Receipt) computePoints() (points int) {
 
 	// purchase time after 2pm & before 4pm
 	purchaseHour, _ := strconv.ParseInt(string(r.PurchaseTime[0:2]), 10, 64)
-	if purchaseHour == 14 || purchaseHour == 15 {
+	purchaseMinute, _ := strconv.ParseInt(string(r.PurchaseTime[3:]), 10, 64)
+	if (purchaseHour == 14 && purchaseMinute > 0) || purchaseHour == 15 {
 		points += 10
 	}
 

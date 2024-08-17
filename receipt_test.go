@@ -164,6 +164,20 @@ func TestReceiptValidation(t *testing.T) {
 		}
 	})
 
+	t.Run("Item empty", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "Target",
+			PurchaseDate: "2022-01-01",
+			PurchaseTime: "13:01",
+			Items:        []Item{},
+			Total:        "35.35",
+		}
+
+		if receipt.Items.valid() {
+			t.Fatal("Items should not be valid")
+		}
+	})
+
 	t.Run("Bad Total", func(t *testing.T) {
 		receipt := Receipt{
 			Retailer:     "Target",
@@ -228,4 +242,140 @@ func TestComputePrice(t *testing.T) {
 		}
 	})
 
+	t.Run("Receipt 2, @ 4pm", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "16:00",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 99 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+
+	t.Run("Receipt 2, @ 2pm", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "14:00",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 99 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+	t.Run("Receipt 2, odd day", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-21",
+			PurchaseTime: "14:33",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 115 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+
+	t.Run("Receipt 2, with two items", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "14:33",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 104 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+
+	t.Run("Receipt 2, description is multiple of 3", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "14:33",
+			Items: []Item{
+				{ShortDescription: "GatoradeX", Price: "2.25"},
+				{ShortDescription: "GatoradeX", Price: "2.25"},
+				{ShortDescription: "GatoradeX", Price: "2.25"},
+				{ShortDescription: "GatoradeX", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 113 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+
+	t.Run("Receipt 2, total is not round dollar & total is not multiple of 0.25", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner Market",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "14:33",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.01",
+		}
+
+		if receipt.computePoints() != 34 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
+
+	t.Run("Receipt 2, retailer name has extra character", func(t *testing.T) {
+		receipt := Receipt{
+			Retailer:     "M&M Corner MarketX",
+			PurchaseDate: "2022-03-20",
+			PurchaseTime: "14:33",
+			Items: []Item{
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+				{ShortDescription: "Gatorade", Price: "2.25"},
+			},
+			Total: "9.00",
+		}
+
+		if receipt.computePoints() != 110 {
+			t.Log(receipt.computePoints())
+			t.Fatal("Compute points is wrong")
+		}
+	})
 }
