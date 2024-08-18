@@ -122,18 +122,11 @@ func TestFailure(t *testing.T) {
 		t.Fatal("Cannot read response body")
 	}
 
-	payload := struct{ Id string }{}
-
-	err = json.Unmarshal(body, &payload)
-	if err != nil {
-		t.Fatal("unable to parse receipt")
-	}
-
 	if !strings.Contains(string(body), "The receipt is invalid") {
 		t.Errorf("got %s", string(body))
 	}
 
-	resp, err = ts.Client().Get(ts.URL + fmt.Sprintf("/receipts/%s/points", payload.Id))
+	resp, err = ts.Client().Get(ts.URL + fmt.Sprintf("/receipts/%s/points", "abc123"))
 
 	if err != nil {
 		t.Fatal(err)
@@ -143,4 +136,14 @@ func TestFailure(t *testing.T) {
 		t.Errorf("got %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
+
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal("Cannot read response body")
+	}
+
+	if !strings.Contains(string(body), "No receipt found for that id") {
+		t.Errorf("got %s", string(body))
+	}
+
 }
