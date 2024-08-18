@@ -47,7 +47,11 @@ func handleProcess(w http.ResponseWriter, r *http.Request) {
 	validator := NewValidator()
 	ValidateReceipt(validator, &receipt)
 	if !validator.Valid() {
-		js, _ := json.MarshalIndent(validator.Errors, " ", "\t")
+		e := map[string]interface{}{
+			"message": "The receipt is invalid",
+			"detail":  validator.Errors,
+		}
+		js, _ := json.MarshalIndent(e, " ", "\t")
 		js = append(js, '\n')
 
 		w.WriteHeader(400)

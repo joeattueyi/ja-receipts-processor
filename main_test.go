@@ -129,6 +129,10 @@ func TestFailure(t *testing.T) {
 		t.Fatal("unable to parse receipt")
 	}
 
+	if !strings.Contains(string(body), "The receipt is invalid") {
+		t.Errorf("got %s", string(body))
+	}
+
 	resp, err = ts.Client().Get(ts.URL + fmt.Sprintf("/receipts/%s/points", payload.Id))
 
 	if err != nil {

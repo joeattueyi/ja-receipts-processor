@@ -8,9 +8,6 @@ import (
 	"unicode"
 )
 
-type validable interface {
-	valid() (valid bool)
-}
 type retailer string
 
 func (v *retailer) valid() (valid bool) {
